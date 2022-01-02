@@ -5,6 +5,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -16,7 +17,6 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
 
 import javax.net.ssl.SSLContext;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
@@ -129,18 +129,8 @@ public class HttpClientUtil {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (httpResponse != null) {
-                try {
-                    httpResponse.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            try {
-                httpClient.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            HttpClientUtils.closeQuietly(httpResponse);
+            HttpClientUtils.closeQuietly(httpClient);
         }
         return null;
     }
